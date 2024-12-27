@@ -1,0 +1,8 @@
+mqtt:
+  client-id: 2
+  ip: 192.168.3.18
+  port: 1883
+  qos: 0
+  subscribe:
+    - tcp
+    - pc

@@ -1,0 +1,48 @@
+{
+  "properties": [
+    {
+      "name": "mqtt.client-id",
+      "type": "java.lang.String",
+      "description": "mqtt.client-id."
+    },
+    {
+      "name": "mqtt.ip",
+      "type": "java.lang.String",
+      "description": "mqtt.ip."
+    },
+    {
+      "name": "mqtt.port",
+      "type": "java.lang.String",
+      "description": "mqtt.port."
+    },
+    {
+      "name": "mqtt.qos",
+      "type": "java.lang.String",
+      "description": "qos."
+    },
+    {
+      "name": "mqtt.subscribe",
+      "type": "java.lang.String",
+      "description": "subscribe topic list."
+    },
+    {
+      "name": "pc-port",
+      "type": "java.lang.Integer",
+      "description": "pc-port."
+    },
+    {
+      "name": "pc-list",
+      "type": "java.lang.String",
+      "description": "pc-list."
+    },
+    {
+      "name": "pc-command-on",
+      "type": "java.lang.String",
+      "description": "pc-command."
+    },
+    {
+      "name": "pc-command-off",
+      "type": "java.lang.String",
+      "description": "pc-command."
+    }
+  ] }

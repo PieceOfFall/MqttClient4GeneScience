@@ -1,0 +1,161 @@
+mqtt:
+  client-id: itsADevClient
+  ip: 127.0.0.1
+  port: 1883
+  qos: 0
+  subscribe:
+    - tcp
+    - pc
+    - light
+    - door
+    - projector
+
+logging:
+  level:
+    com.fall.handler: debug
+
+plc:
+    list:
+      # 研发管线
+      - name: pipeline
+        ip: "192.168.3.45"
+        port: 7788
+        poweron-command: ["openyfgx"]
+        sub-command-list:
+          - name: spoweroff
+            ip: 192.168.3.45
+            port: 7788
+            command: ["shutdown"]
+
+      # 合作院企
+      - name: cooperation
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openhzyq"]
+        poweroff-command: ["closehzyq"]
+
+      # 儿童呼吸消化
+      - name: respiration
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openethxxh"]
+        poweroff-command: ["closeethxxh"]
+
+      # 儿童神经
+      - name: neuron
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openetsj"]
+        poweroff-command: ["closeetsj"]
+
+      # 体重管理
+      - name: weight
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["opentzgl"]
+        poweroff-command: ["closetzgl"]
+
+      # 足脊健康
+      - name: feet
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openzjjk"]
+        poweroff-command: ["closezjjk"]
+
+      # 女性健康
+      - name: female
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["opennxjk"]
+        poweroff-command: ["closenxjk"]
+
+      # 皮科医美
+      - name: skin
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openpkym"]
+        poweroff-command: ["closepkym"]
+
+      # 肿瘤
+      - name: tumor
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openzl"]
+        poweroff-command: ["closezl"]
+
+      # 内分泌 & 风湿免疫
+      - name: immunity
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["opennfmfs"]
+        poweroff-command: ["closenfmfs"]
+
+      # 生长激素
+      - name: growth
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openszjs"]
+        poweroff-command: ["closeszjs"]
+
+      # 生产基地
+      - name: production
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openscjd"]
+        poweroff-command: ["closescjd"]
+
+      # 发展战略 (投影仪主机)
+      - name: projector
+        ip: 192.168.3.45
+        is-hex: true
+        port: 7788
+        poweron-command: ["openfzzl"]
+        poweroff-command: ["FF 00 00 C1 FE"]
+        sub-command-list:
+          - name: play
+            ip: 192.168.3.45
+            is-hex: true
+            port: 7788
+            command: ["FF AA CC 02 FE"]
+#          pause: FF AA CC 02 FE
+#          vloumeUp: FF AA CC 07 FE
+#          volumeDown: FF AA CC 06 FE
+#          head: FF AA CC 0B FE
+#          last: FF AA CC 0F FE
+#          next: FF AA CC 10 FE
+#          mute: FF AA CC 0A FE
+
+      # 企业荣誉
+      - name: honor
+        ip: 192.168.x.x
+        port: 6000
+        poweron-command: ["openqyry"]
+        poweroff-command: ["closeqyry"]
+
+      # 门禁1
+      - name: door1
+        ip: 192.168.x.x
+        port: 6000
+        reversal-command: ["door1"]
+
+      # 门禁2
+      - name: door2
+        ip: 192.168.x.x
+        port: 6000
+        reversal-command: ["door2"]
+
+      # 灯带
+      - name: light
+        ip: 192.168.3.45
+        port: 6000
+        sub-command-list:
+          - name: all
+            ip: 192.168.3.45
+            is-hex: true
+            port: 7788
+            command: [ "FF AA CC 02 FE" ]
+          - name: 1
+            ip: 192.168.3.45
+            is-hex: true
+            port: 7788
+            command: [ "FF AA CC 02 FE" ]

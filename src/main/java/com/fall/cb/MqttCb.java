@@ -1,9 +1,14 @@
 package com.fall.cb;
 
+import com.fall.handler.MsgHandler;
 import io.github.netty.mqtt.client.callback.MqttCallback;
 import io.github.netty.mqtt.client.callback.MqttReceiveCallbackResult;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 
 /**
@@ -12,10 +17,17 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MqttCb implements MqttCallback {
+
+    private final MsgHandler handler;
+
     @Override
     public void messageReceiveCallback(MqttReceiveCallbackResult receiveCallbackResult) {
-        System.out.println(new String(receiveCallbackResult.getPayload()));
+        String msg = new String(receiveCallbackResult.getPayload(), StandardCharsets.UTF_8);
+
+        handler.handleMsg(msg);
+
         MqttCallback.super.messageReceiveCallback(receiveCallbackResult);
     }
 }

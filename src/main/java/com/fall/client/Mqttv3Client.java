@@ -8,7 +8,6 @@ import io.github.netty.mqtt.client.constant.MqttVersion;
 import io.github.netty.mqtt.client.msg.MqttWillMsg;
 import io.netty.handler.codec.mqtt.MqttQoS;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;

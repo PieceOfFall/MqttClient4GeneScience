@@ -18,7 +18,6 @@ public class MqttConfig {
         MqttConfiguration mqttConfiguration = new MqttConfiguration(2);
         //创建MQTT客户端工厂
         return new DefaultMqttClientFactory(mqttConfiguration);
-
     }
 
 }
