@@ -1,8 +1,323 @@
 mqtt:
-  client-id: 2
-  ip: 192.168.3.18
+  client-id: itsADevClient
+  ip: 127.0.0.1
   port: 1883
   qos: 0
   subscribe:
     - tcp
     - pc
+    - light
+    - door
+    - projector
+    - screen
+    - sequential
+
+logging:
+  level:
+    com.fall.handler: debug
+
+plc:
+  list:
+    # 所有pc
+    - name: allDevice
+      ip: 10.29.5.149
+      port: 6000
+      poweron-command: [ "openall" ]
+      poweroff-command: [ "closeall" ]
+
+    # 时序电源
+    - name: sequential
+      ip: 10.29.5.149
+      port: 9232
+      isHex: true
+      poweron-command: [ "55 01 A4 00 00 A5" ]
+      poweroff-command: [ "55 01 A5 00 00 A4" ]
+
+    # 所有大屏
+    - name: screen
+      ip: 10.29.5.149
+      port: 6000
+      isHex: true
+      sub-command-list:
+        - name: screenPoweron
+          is-hex: true
+          address: ["10.29.5.159:xxxx","10.29.5.160:xxxx","10.29.5.161:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
+        - name: screenPoweroff
+          is-hex: true
+          address: ["10.29.5.159:xxxx","10.29.5.160:xxxx","10.29.5.161:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
+        - name: pipelinePoweron
+          is-hex: true
+          address: ["10.29.5.159:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
+        - name: growthPoweron
+          is-hex: true
+          address: ["10.29.5.160:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
+        - name: productionPoweron
+          is-hex: true
+          address: ["10.29.5.161:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
+        - name: pipelinePoweroff
+          is-hex: true
+          address: ["10.29.5.159:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
+        - name: growthPoweroff
+          is-hex: true
+          address: ["10.29.5.160:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
+        - name: productionPoweroff
+          is-hex: true
+          address: ["10.29.5.161:xxxx"]
+          command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
+
+    # 研发管线
+    - name: pipeline
+      ip: 10.29.5.141
+      port: 6000
+      poweron-command: [ "openyfgx" ]
+      poweroff-command: [ "closeyfgx" ]
+
+    # 合作院企
+    - name: cooperation
+      ip: 10.29.5.129
+      port: 6000
+      poweron-command: [ "openhzyq" ]
+      poweroff-command: [ "closehzyq" ]
+
+      # 医学营养
+    - name: nutrition
+      ip: 10.29.5.130
+      port: 6000
+      poweron-command: [ "openyxyy" ]
+      poweroff-command: [ "closeyxyy" ]
+
+    # 儿童呼吸消化
+    - name: respiration
+      ip: 10.29.5.131
+      port: 6000
+      poweron-command: [ "openethxxh" ]
+      poweroff-command: [ "closeethxxh" ]
+
+    # 儿童神经
+    - name: neuron
+      ip: 10.29.5.132
+      port: 6000
+      poweron-command: [ "openetsj" ]
+      poweroff-command: [ "closeetsj" ]
+
+    # 体重管理
+    - name: weight
+      ip: 10.29.5.133
+      port: 6000
+      poweron-command: [ "opentzgl" ]
+      poweroff-command: [ "closetzgl" ]
+
+    # 足脊健康
+    - name: feet
+      ip: 10.29.5.134
+      port: 6000
+      poweron-command: [ "openzjjk" ]
+      poweroff-command: [ "closezjjk" ]
+
+    # 女性健康
+    - name: female
+      ip: 10.29.5.135
+      port: 6000
+      poweron-command: [ "opennxjk" ]
+      poweroff-command: [ "closenxjk" ]
+
+    # 皮科医美
+    - name: skin
+      ip: 10.29.5.136
+      port: 6000
+      poweron-command: [ "openpkym" ]
+      poweroff-command: [ "closepkym" ]
+
+    # 肿瘤
+    - name: tumor
+      ip: 10.29.5.137
+      port: 6000
+      poweron-command: [ "openzl" ]
+      poweroff-command: [ "closezl" ]
+
+    # 内分泌 & 风湿免疫
+    - name: immunity
+      ip: 10.29.5.138
+      port: 6000
+      poweron-command: [ "opennfmfs" ]
+      poweroff-command: [ "closenfmfs" ]
+
+    # 生长激素
+    - name: growth
+      ip: 10.29.5.142
+      port: 6000
+      poweron-command: [ "openszjs" ]
+      poweroff-command: [ "closeszjs" ]
+
+    # 生产基地
+    - name: production
+      ip: 10.29.5.143
+      port: 6000
+      poweron-command: [ "openscjd" ]
+      poweroff-command: [ "closescjd" ]
+
+    # 发展战略 (投影仪)
+    - name: projector
+      ip: 10.29.5.140
+      is-hex: true
+      port: 6000
+      poweron-command: [ "openfzzl" ]
+      poweroff-command: [ "closefzzl" ]
+      sub-command-list:
+        - name: projectorPoweron
+          is-hex: true
+          address: ["10.29.5.144:1024","10.29.5.145:1024","10.29.5.146:1024","10.29.5.147:1024"]
+          command: [ "3030504F4EOD" ]
+        - name: projectorPoweroff
+          is-hex: true
+          address: ["10.29.5.144:1024","10.29.5.145:1024","10.29.5.146:1024","10.29.5.147:1024"]
+          command: [ "3030504F460D" ]
+        - name: poweron1
+          is-hex: true
+          address: ["10.29.5.144:1024"]
+          command: [ "3030504F4EOD" ]
+        - name: poweron2
+          is-hex: true
+          address: ["10.29.5.145:1024"]
+          command: [ "3030504F4EOD" ]
+        - name: poweron3
+          is-hex: true
+          address: ["10.29.5.146:1024"]
+          command: [ "3030504F4EOD" ]
+        - name: poweron4
+          is-hex: true
+          address: ["10.29.5.147:1024"]
+          command: [ "3030504F4EOD" ]
+        - name: poweroff1
+          is-hex: true
+          address: ["10.29.5.144:1024"]
+          command: [ "3030504F460D" ]
+        - name: poweroff2
+          is-hex: true
+          address: ["10.29.5.145:1024"]
+          command: [ "3030504F460D" ]
+        - name: poweroff3
+          is-hex: true
+          address: ["10.29.5.146:1024"]
+          command: [ "3030504F460D" ]
+        - name: poweroff4
+          is-hex: true
+          address: ["10.29.5.147:1024"]
+          command: [ "3030504F460D" ]
+        - name: play
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 01 FE" ]
+        - name: pause
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 02 FE" ]
+        - name: volumeUp
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA E3 0A FE" ]
+        - name: volumeDown
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA E4 0A FE" ]
+        - name: head
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 0B FE" ]
+        - name: last
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 0F FE" ]
+        - name: next
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 10 FE" ]
+        - name: mute
+          ip: 10.29.5.140
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 0A FE" ]
+
+
+    # 企业荣誉
+    - name: honor
+      ip: 10.29.5.139
+      port: 6000
+      poweron-command: [ "openqyry" ]
+      poweroff-command: [ "closeqyry" ]
+
+    # 门禁1
+    - name: door1
+      ip: 10.29.5.151
+      port: 6000
+      reversal-command: [ "door01" ]
+
+    # 门禁2
+    - name: door2
+      ip: 10.29.5.151
+      port: 6000
+      reversal-command: [ "door02" ]
+
+    # 灯带
+    - name: light
+      ip: 10.29.5.151
+      port: 6000
+      sub-command-list:
+        - name: all
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversalall" ]
+        - name: 1
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal01" ]
+        - name: 2
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal02" ]
+        - name: 3
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal03" ]
+        - name: 4
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal04" ]
+        - name: 5
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal05" ]
+        - name: 6
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal06" ]
+        - name: 7
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal07" ]
+        - name: 8
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal08" ]
+        - name: 9
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal09" ]
+        - name: 10
+          ip: 10.29.5.151
+          port: 6000
+          command: [ "reversal10" ]

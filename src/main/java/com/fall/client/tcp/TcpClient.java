@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -77,21 +78,20 @@ public class TcpClient {
     }
 
     @Async
-    public void sendTcpMsgAll(List<PlcCmd> plcCmdList,String cmd) {
+    public void sendTcpMsgAll(List<PlcCmd> plcCmdList, String cmd) {
         for (PlcCmd plcCmd : plcCmdList) {
-            sendTcpMessage(plcCmd,cmd);
+            sendTcpMessage(plcCmd, cmd);
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
-                log.error("sleep has been interrupted: {}",e.getMessage());
+                log.error("sleep has been interrupted: {}", e.getMessage());
             }
         }
     }
 
     @Async
     public void sendTcpMessage(PlcCmd plcCmd, String cmd) {
-        String ip;
-        Integer port;
+
         Boolean isHex;
 
         if (cmd == null) {
@@ -109,19 +109,33 @@ public class TcpClient {
                 ? plcCmd.getPoweroffCommand()
                 : null;
 
-
+        List<String> addressList = new ArrayList<>();
         if (msgList == null) {
             try {
                 List<PlcSubCmd> subCommandList = plcCmd.getSubCommandList();
-                if(subCommandList == null) throw new UnresolvedCmdException();
+                if (subCommandList == null) throw new UnresolvedCmdException();
                 PlcSubCmd subCmd = subCommandList
                         .stream()
                         .filter(plcSubCmd -> cmd.equals(plcSubCmd.getName()))
                         .findFirst()
                         .orElseThrow(UnresolvedCmdException::new);
-                ip=subCmd.getIp();
-                port = subCmd.getPort();
+                String ip = subCmd.getIp();
+                Integer port = subCmd.getPort();
                 isHex = subCmd.getIsHex();
+
+                if (NetUtil.validateAddress(ip, port)) {
+                    addressList.add(ip + ":" + port);
+                }
+
+                List<String> address = subCmd.getAddress();
+                if (address != null && NetUtil.validateAddress(address)) {
+                    addressList.addAll(subCmd.getAddress());
+                }
+
+                if (addressList.isEmpty()) {
+                    log.error("No Valid Address Found");
+                    return;
+                }
 
                 msgList = subCmd.getCommand();
             } catch (UnresolvedCmdException e) {
@@ -129,48 +143,51 @@ public class TcpClient {
                 return;
             }
         } else {
-            ip = plcCmd.getIp();
-            port = plcCmd.getPort();
+            String ip = plcCmd.getIp();
+            Integer port = plcCmd.getPort();
             isHex = plcCmd.getIsHex();
+
+            if (!NetUtil.validateAddress(ip, port))
+                return;
+
+            addressList.add(ip + ":" + port);
         }
 
-        // Validate inputs
-        if (ip == null || ip.isEmpty()) {
-            log.error("IP address cannot be null or empty");
-            return;
-        }
-        if (port < 1 || port > 65535) {
-            log.error("Port must be between 1 and 65535");
-            return;
-        }
+        log.info("Target Address: {}", addressList);
+        for (String address : addressList) {
+            String[] splitAddress = address.split(":");
+            String socketIp = splitAddress[0];
+            int socketPort = Integer.parseInt(splitAddress[1]);
 
-        try (Socket socket = new Socket(ip, port); // Establish connection
-             OutputStream outputStream = socket.getOutputStream()) {
+            try (Socket socket = new Socket(socketIp, socketPort); // Establish connection
+                 OutputStream outputStream = socket.getOutputStream()) {
 
-            // Send message
-            log.info("[tcp] {}:{} [{}]", ip, port, msgList);
+                // Send message
+                log.info("[tcp] {}:{} {}", socketIp, socketPort, msgList);
 
-            Function<String, byte[]> mapFn = isHex ? NetUtil::hexStringToByteArray : String::getBytes;
-            msgList.stream()
-                    .map(mapFn)
-                    .forEach(byteMsg -> {
-                        try {
-                            log.info("write {}",new String(byteMsg));
-                            outputStream.write(byteMsg);
-                            outputStream.flush();
-                            Thread.sleep(500);
-                        } catch (IOException e) {
-                            log.error("Failed to send TCP message", e);
-                        } catch (InterruptedException e) {
-                            log.error("sleep has been interrupted: {}",e.getMessage());
-                        }
-                    });
+                Function<String, byte[]> mapFn = isHex ? NetUtil::hexStringToByteArray : String::getBytes;
+                msgList.stream()
+                        .map(mapFn)
+                        .forEach(byteMsg -> {
+                            try {
+                                log.info("write {}", new String(byteMsg));
+                                outputStream.write(byteMsg);
+                                outputStream.flush();
+                                Thread.sleep(500);
+                            } catch (IOException e) {
+                                log.error("Failed to send TCP message", e);
+                            } catch (InterruptedException e) {
+                                log.error("sleep has been interrupted: {}", e.getMessage());
+                            }
+                        });
 
-        } catch (UnknownHostException e) {
-            log.error("Unknown host: " + ip, e);
-        } catch (IOException e) {
-            log.error("Failed to send TCP message", e);
+            } catch (UnknownHostException e) {
+                log.error("Unknown host: " + socketIp, e);
+            } catch (IOException e) {
+                log.error("Failed to send TCP message", e);
+            }
         }
     }
+
 
 }

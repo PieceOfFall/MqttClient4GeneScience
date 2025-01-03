@@ -13,6 +13,7 @@ public class PlcSubCmd {
     private String name;
     private String ip;
     private Integer port;
+    private List<String> address;
     private Boolean isHex = false;
     private List<String> command;
 }

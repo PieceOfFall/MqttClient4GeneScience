@@ -15,147 +15,224 @@ logging:
     com.fall.handler: debug
 
 plc:
-    list:
-      # 研发管线
-      - name: pipeline
-        ip: "192.168.3.45"
-        port: 7788
-        poweron-command: ["openyfgx"]
-        sub-command-list:
-          - name: spoweroff
-            ip: 192.168.3.45
-            port: 7788
-            command: ["shutdown"]
+  list:
+    # 所有pc
+    - name: allDevice
+      ip: 192.168.3.45
+      port: 6000
+      poweron-command: [ "openall" ]
+      poweroff-command: [ "closeall" ]
 
-      # 合作院企
-      - name: cooperation
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openhzyq"]
-        poweroff-command: ["closehzyq"]
+    # 研发管线
+    - name: pipeline
+      ip: 192.168.3.45
+      port: 6000
+      poweron-command: [ "openyfgx" ]
+      poweroff-command: [ "closeyfgx" ]
 
-      # 儿童呼吸消化
-      - name: respiration
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openethxxh"]
-        poweroff-command: ["closeethxxh"]
+    # 合作院企
+    - name: cooperation
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openhzyq" ]
+      poweroff-command: [ "closehzyq" ]
 
-      # 儿童神经
-      - name: neuron
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openetsj"]
-        poweroff-command: ["closeetsj"]
+    # 儿童呼吸消化
+    - name: respiration
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openethxxh" ]
+      poweroff-command: [ "closeethxxh" ]
 
-      # 体重管理
-      - name: weight
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["opentzgl"]
-        poweroff-command: ["closetzgl"]
+    # 儿童神经
+    - name: neuron
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openetsj" ]
+      poweroff-command: [ "closeetsj" ]
 
-      # 足脊健康
-      - name: feet
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openzjjk"]
-        poweroff-command: ["closezjjk"]
+    # 体重管理
+    - name: weight
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "opentzgl" ]
+      poweroff-command: [ "closetzgl" ]
 
-      # 女性健康
-      - name: female
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["opennxjk"]
-        poweroff-command: ["closenxjk"]
+    # 足脊健康
+    - name: feet
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openzjjk" ]
+      poweroff-command: [ "closezjjk" ]
 
-      # 皮科医美
-      - name: skin
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openpkym"]
-        poweroff-command: ["closepkym"]
+    # 女性健康
+    - name: female
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "opennxjk" ]
+      poweroff-command: [ "closenxjk" ]
 
-      # 肿瘤
-      - name: tumor
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openzl"]
-        poweroff-command: ["closezl"]
+    # 皮科医美
+    - name: skin
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openpkym" ]
+      poweroff-command: [ "closepkym" ]
 
-      # 内分泌 & 风湿免疫
-      - name: immunity
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["opennfmfs"]
-        poweroff-command: ["closenfmfs"]
+    # 肿瘤
+    - name: tumor
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openzl" ]
+      poweroff-command: [ "closezl" ]
 
-      # 生长激素
-      - name: growth
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openszjs"]
-        poweroff-command: ["closeszjs"]
+    # 内分泌 & 风湿免疫
+    - name: immunity
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "opennfmfs" ]
+      poweroff-command: [ "closenfmfs" ]
 
-      # 生产基地
-      - name: production
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openscjd"]
-        poweroff-command: ["closescjd"]
+    # 生长激素
+    - name: growth
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openszjs" ]
+      poweroff-command: [ "closeszjs" ]
 
-      # 发展战略 (投影仪主机)
-      - name: projector
-        ip: 192.168.3.45
-        is-hex: true
-        port: 7788
-        poweron-command: ["openfzzl"]
-        poweroff-command: ["FF 00 00 C1 FE"]
-        sub-command-list:
-          - name: play
-            ip: 192.168.3.45
-            is-hex: true
-            port: 7788
-            command: ["FF AA CC 02 FE"]
-#          pause: FF AA CC 02 FE
-#          vloumeUp: FF AA CC 07 FE
-#          volumeDown: FF AA CC 06 FE
-#          head: FF AA CC 0B FE
-#          last: FF AA CC 0F FE
-#          next: FF AA CC 10 FE
-#          mute: FF AA CC 0A FE
+    # 生产基地
+    - name: production
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openscjd" ]
+      poweroff-command: [ "closescjd" ]
 
-      # 企业荣誉
-      - name: honor
-        ip: 192.168.x.x
-        port: 6000
-        poweron-command: ["openqyry"]
-        poweroff-command: ["closeqyry"]
+    # 发展战略 (投影仪主机)
+    - name: projector
+      ip: 192.168.3.45
+      is-hex: true
+      port: 6000
+      poweron-command: [ "openfzzl" ]
+      poweroff-command: [ "closefzzl" ]
+      sub-command-list:
+        - name: projectorPoweron
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "3030504F4EOD" ]
+        - name: projectorPoweroff
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "3030504F460D" ]
+        - name: play
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 01 FE" ]
+        - name: pause
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 02 FE" ]
+        - name: volumeUp
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA E3 0A FE" ]
+        - name: volumeDown
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA E4 0A FE" ]
+        - name: head
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 0B FE" ]
+        - name: last
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 0F FE" ]
+        - name: next
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 10 FE" ]
+        - name: mute
+          ip: 192.168.3.45
+          is-hex: true
+          port: 6000
+          command: [ "FF AA CC 0A FE" ]
 
-      # 门禁1
-      - name: door1
-        ip: 192.168.x.x
-        port: 6000
-        reversal-command: ["door1"]
 
-      # 门禁2
-      - name: door2
-        ip: 192.168.x.x
-        port: 6000
-        reversal-command: ["door2"]
+    # 企业荣誉
+    - name: honor
+      ip: 192.168.x.x
+      port: 6000
+      poweron-command: [ "openqyry" ]
+      poweroff-command: [ "closeqyry" ]
 
-      # 灯带
-      - name: light
-        ip: 192.168.3.45
-        port: 6000
-        sub-command-list:
-          - name: all
-            ip: 192.168.3.45
-            is-hex: true
-            port: 7788
-            command: [ "FF AA CC 02 FE" ]
-          - name: 1
-            ip: 192.168.3.45
-            is-hex: true
-            port: 7788
-            command: [ "FF AA CC 02 FE" ]
+    # 门禁1
+    - name: door1
+      ip: 192.168.x.x
+      port: 6000
+      reversal-command: [ "door01" ]
+
+    # 门禁2
+    - name: door2
+      ip: 192.168.x.x
+      port: 6000
+      reversal-command: [ "door02" ]
+
+    # 灯带
+    - name: light
+      ip: 192.168.3.45
+      port: 6000
+      sub-command-list:
+        - name: all
+          ip: 192.168.3.45
+          port: 6000
+          address: ["192.168.3.48:6000"]
+          command: [ "reversalall" ]
+        - name: 1
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal01" ]
+        - name: 2
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal02" ]
+        - name: 3
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal03" ]
+        - name: 4
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal04" ]
+        - name: 5
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal05" ]
+        - name: 6
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal06" ]
+        - name: 7
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal07" ]
+        - name: 8
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal08" ]
+        - name: 9
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal09" ]
+        - name: 10
+          ip: 192.168.3.45
+          port: 6000
+          command: [ "reversal10" ]
