@@ -1,8 +1,12 @@
 mqtt:
   client-id: itsADevClient
-  ip: 127.0.0.1
+  # MQTT服务器IP/或者127.0.0.1
+  ip: 10.29.5.200
+  # 端口
   port: 1883
+  # 消息质量
   qos: 0
+  # 订阅主题
   subscribe:
     - tcp
     - pc
@@ -22,12 +26,17 @@ plc:
     - name: allDevice
       ip: 10.29.5.149
       port: 6000
-      poweron-command: [ "openall" ]
-      poweroff-command: [ "closeall" ]
+      sub-command-list:
+        - name: pcPoweron
+          address: [ "10.29.5.148:6000","10.29.5.149:6000" ]
+          command: [ "openall" ]
+        - name: pcPoweroff
+          address: [ "10.29.5.148:6000","10.29.5.149:6000" ]
+          command: [ "closeall" ]
 
     # 时序电源
     - name: sequential
-      ip: 10.29.5.149
+      ip: 10.29.5.150
       port: 9232
       isHex: true
       poweron-command: [ "55 01 A4 00 00 A5" ]
@@ -35,7 +44,7 @@ plc:
 
     # 所有大屏
     - name: screen
-      ip: 10.29.5.149
+      ip: 10.29.5.149 #todo
       port: 6000
       isHex: true
       sub-command-list:
@@ -72,100 +81,100 @@ plc:
           address: ["10.29.5.161:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
 
-    # 研发管线
+    # 研发管线-主机
     - name: pipeline
-      ip: 10.29.5.141
+      ip: 10.29.5.149
       port: 6000
       poweron-command: [ "openyfgx" ]
       poweroff-command: [ "closeyfgx" ]
 
-    # 合作院企
+    # 合作院企-一体机
     - name: cooperation
-      ip: 10.29.5.129
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openhzyq" ]
       poweroff-command: [ "closehzyq" ]
 
-      # 医学营养
+      # 医学营养-一体机
     - name: nutrition
-      ip: 10.29.5.130
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openyxyy" ]
       poweroff-command: [ "closeyxyy" ]
 
-    # 儿童呼吸消化
+    # 儿童呼吸消化-一体机
     - name: respiration
-      ip: 10.29.5.131
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openethxxh" ]
       poweroff-command: [ "closeethxxh" ]
 
-    # 儿童神经
+    # 儿童神经-一体机
     - name: neuron
-      ip: 10.29.5.132
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openetsj" ]
       poweroff-command: [ "closeetsj" ]
 
-    # 体重管理
+    # 体重管理-一体机
     - name: weight
-      ip: 10.29.5.133
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "opentzgl" ]
       poweroff-command: [ "closetzgl" ]
 
-    # 足脊健康
+    # 足脊健康-一体机
     - name: feet
-      ip: 10.29.5.134
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openzjjk" ]
       poweroff-command: [ "closezjjk" ]
 
-    # 女性健康
+    # 女性健康-一体机
     - name: female
-      ip: 10.29.5.135
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "opennxjk" ]
       poweroff-command: [ "closenxjk" ]
 
-    # 皮科医美
+    # 皮科医美-一体机
     - name: skin
-      ip: 10.29.5.136
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openpkym" ]
       poweroff-command: [ "closepkym" ]
 
-    # 肿瘤
+    # 肿瘤-一体机
     - name: tumor
-      ip: 10.29.5.137
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "openzl" ]
       poweroff-command: [ "closezl" ]
 
-    # 内分泌 & 风湿免疫
+    # 内分泌 & 风湿免疫-一体机
     - name: immunity
-      ip: 10.29.5.138
+      ip: 10.29.5.148
       port: 6000
       poweron-command: [ "opennfmfs" ]
       poweroff-command: [ "closenfmfs" ]
 
-    # 生长激素
+    # 生长激素-主机
     - name: growth
-      ip: 10.29.5.142
+      ip: 10.29.5.149
       port: 6000
       poweron-command: [ "openszjs" ]
       poweroff-command: [ "closeszjs" ]
 
-    # 生产基地
+    # 生产基地-主机
     - name: production
-      ip: 10.29.5.143
+      ip: 10.29.5.149
       port: 6000
       poweron-command: [ "openscjd" ]
       poweroff-command: [ "closescjd" ]
 
     # 发展战略 (投影仪)
     - name: projector
-      ip: 10.29.5.140
+      ip: 10.29.5.149
       is-hex: true
       port: 6000
       poweron-command: [ "openfzzl" ]
@@ -253,9 +262,9 @@ plc:
           command: [ "FF AA CC 0A FE" ]
 
 
-    # 企业荣誉
+    # 企业荣誉-一体机
     - name: honor
-      ip: 10.29.5.139
+      ip: 10.29.5.149
       port: 6000
       poweron-command: [ "openqyry" ]
       poweroff-command: [ "closeqyry" ]
