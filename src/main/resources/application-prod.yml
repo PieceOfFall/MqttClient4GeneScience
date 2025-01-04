@@ -1,7 +1,7 @@
 mqtt:
   client-id: itsADevClient
   # MQTT服务器IP/或者127.0.0.1
-  ip: 10.29.5.200
+  ip: 127.0.0.1
   # 端口
   port: 1883
   # 消息质量
@@ -44,9 +44,6 @@ plc:
 
     # 所有大屏
     - name: screen
-      ip: 10.29.5.149 #todo
-      port: 6000
-      isHex: true
       sub-command-list:
         - name: screenPoweron
           is-hex: true

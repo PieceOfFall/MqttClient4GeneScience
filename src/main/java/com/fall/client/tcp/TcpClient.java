@@ -99,6 +99,7 @@ public class TcpClient {
             return;
         }
 
+
         List<String> msgList = "reversal".equals(cmd)
                 ? plcCmd.getReversalCommand()
 
@@ -133,7 +134,7 @@ public class TcpClient {
                 }
 
                 if (addressList.isEmpty()) {
-                    log.error("No Valid Address Found");
+                    log.error("No Valid Address Found For {}",plcCmd.getName()+":"+cmd);
                     return;
                 }
 

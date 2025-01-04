@@ -36,15 +36,20 @@ public class NetUtil {
     }
 
     public static Boolean validateAddress(List<String> addressList) {
-        for (String address : addressList) {
-            String[] splitAddress = address.split(":");
-            if (splitAddress.length != 2) {
-                log.error("Invalid Address: {}", address);
-                return false;
+        try {
+            for (String address : addressList) {
+                String[] splitAddress = address.split(":");
+                if (splitAddress.length != 2) {
+                    log.error("Invalid Address: {}", address);
+                    return false;
+                }
+                if (!validateAddress(splitAddress[0], Integer.parseInt(splitAddress[1])))
+                    return false;
             }
-            if (!validateAddress(splitAddress[0], Integer.parseInt(splitAddress[1])))
-                return false;
+            return true;
+        } catch (NumberFormatException e) {
+            log.error("Invalid Port {}",e.getMessage());
+            return false;
         }
-        return true;
     }
 }
