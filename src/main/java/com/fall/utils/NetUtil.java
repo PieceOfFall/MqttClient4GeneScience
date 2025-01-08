@@ -25,7 +25,17 @@ public class NetUtil {
 
     public static byte[] hexStringToByteArray(String s) {
         s = s.replace(" ", "").toUpperCase();
-        return new BigInteger(s, 16).toByteArray();
+        // 创建 BigInteger，并确保它不带符号扩展
+        BigInteger bigInt = new BigInteger(s, 16);
+        byte[] byteArray = bigInt.toByteArray();
+
+        // 如果数组的第一个字节是0，且其余字节符合预期，则去掉前面的0
+        if (byteArray.length > 1 && ( s.charAt(0) != '0' &&  byteArray[0] == 0)) {
+            byte[] trimmedArray = new byte[byteArray.length - 1];
+            System.arraycopy(byteArray, 1, trimmedArray, 0, trimmedArray.length);
+            return trimmedArray;
+        }
+        return byteArray;
     }
 
     public static Boolean validateAddress(String ip, Integer port) {
