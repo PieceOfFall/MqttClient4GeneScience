@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author FAll
@@ -51,7 +52,7 @@ public class Mqttv3Client {
     @PostConstruct
     public void connect() {
         //创建连接参数，设置客户端ID
-        MqttConnectParameter mqttConnectParameter = new MqttConnectParameter(clientId);
+        MqttConnectParameter mqttConnectParameter = new MqttConnectParameter(clientId + UUID.randomUUID());
         //设置客户端版本（默认为3.1.1）
         mqttConnectParameter.setMqttVersion(MqttVersion.MQTT_3_1_1);
         //是否自动重连
@@ -63,7 +64,7 @@ public class Mqttv3Client {
         //是否使用SSL/TLS
         mqttConnectParameter.setSsl(false);
         //遗嘱消息
-        MqttWillMsg mqttWillMsg = new MqttWillMsg("backend-disconnect", new byte[]{}, MqttQoS.EXACTLY_ONCE);
+        MqttWillMsg mqttWillMsg = new MqttWillMsg("backend-disconnect", new byte[]{}, MqttQoS.AT_LEAST_ONCE);
         mqttConnectParameter.setWillMsg(mqttWillMsg);
         //是否清除会话
         mqttConnectParameter.setCleanSession(true);
@@ -74,7 +75,6 @@ public class Mqttv3Client {
         //创建一个客户端
         MqttClient mqttClient = mqttClientFactory.createMqttClient(mqttConnectParameter);
         mqttClient.addMqttCallback(ctrlMqttCallback);
-
         mqttClient.connect();
 
         for (String sub : subscribe) {
