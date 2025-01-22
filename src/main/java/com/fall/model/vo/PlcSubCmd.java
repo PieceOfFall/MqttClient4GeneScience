@@ -15,5 +15,6 @@ public class PlcSubCmd {
     private Integer port;
     private List<String> address;
     private Boolean isHex = false;
+    private String cType = "tcp";
     private List<String> command;
 }

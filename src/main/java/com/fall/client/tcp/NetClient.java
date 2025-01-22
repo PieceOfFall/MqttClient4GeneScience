@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -22,9 +21,9 @@ import java.util.function.Function;
 @Slf4j
 @SuppressWarnings("unused")
 @Component
-public class TcpClient {
+public class NetClient {
     @Async
-    public void sendTcpMessage(String ip, int port, String message) {
+    public void sendMsg(String ip, int port, String message) {
         // Validate inputs
         if (ip == null || ip.isEmpty()) {
             throw new IllegalArgumentException("IP address cannot be null or empty");
@@ -51,7 +50,7 @@ public class TcpClient {
     }
 
     @Async
-    public void sendTcpMessage(String ip, int port, byte[] hexMessage) {
+    public void sendMsg(String ip, int port, byte[] hexMessage) {
         // Validate inputs
         if (ip == null || ip.isEmpty()) {
             throw new IllegalArgumentException("IP address cannot be null or empty");
@@ -80,7 +79,7 @@ public class TcpClient {
     @Async
     public void sendTcpMsgAll(List<PlcCmd> plcCmdList, String cmd) {
         for (PlcCmd plcCmd : plcCmdList) {
-            sendTcpMessage(plcCmd, cmd);
+            sendMsg(plcCmd, cmd);
             try {
                 Thread.sleep(300);
             } catch (InterruptedException e) {
@@ -90,15 +89,15 @@ public class TcpClient {
     }
 
     @Async
-    public void sendTcpMessage(PlcCmd plcCmd, String cmd) {
+    public void sendMsg(PlcCmd plcCmd, String cmd) {
 
         Boolean isHex;
+        String clientType;
 
         if (cmd == null) {
             log.error("cmd cannot be null or empty");
             return;
         }
-
 
         List<String> msgList = "reversal".equals(cmd)
                 ? plcCmd.getReversalCommand()
@@ -123,6 +122,8 @@ public class TcpClient {
                 String ip = subCmd.getIp();
                 Integer port = subCmd.getPort();
                 isHex = subCmd.getIsHex();
+                clientType = subCmd.getCType();
+
 
                 if (NetUtil.validateAddress(ip, port)) {
                     addressList.add(ip + ":" + port);
@@ -134,7 +135,7 @@ public class TcpClient {
                 }
 
                 if (addressList.isEmpty()) {
-                    log.error("No Valid Address Found For {}",plcCmd.getName()+":"+cmd);
+                    log.error("No Valid Address Found For {}", plcCmd.getName() + ":" + cmd);
                     return;
                 }
 
@@ -147,6 +148,7 @@ public class TcpClient {
             String ip = plcCmd.getIp();
             Integer port = plcCmd.getPort();
             isHex = plcCmd.getIsHex();
+            clientType = plcCmd.getCType();
 
             if (!NetUtil.validateAddress(ip, port))
                 return;
@@ -158,37 +160,89 @@ public class TcpClient {
         for (String address : addressList) {
             String[] splitAddress = address.split(":");
             String socketIp = splitAddress[0];
+
             int socketPort = Integer.parseInt(splitAddress[1]);
 
-            try (Socket socket = new Socket(socketIp, socketPort); // Establish connection
-                 OutputStream outputStream = socket.getOutputStream()) {
+            Function<String, byte[]> mapFn = isHex ? NetUtil::hexStringToByteArray : String::getBytes;
 
-                // Send message
-                log.info("[tcp] {}:{} {}", socketIp, socketPort, msgList);
+            // Send message
+            log.info("[{}] {}:{} {}", clientType, socketIp, socketPort, msgList);
 
-                Function<String, byte[]> mapFn = isHex ? NetUtil::hexStringToByteArray : String::getBytes;
-                msgList.stream()
-                        .map(mapFn)
-                        .forEach(byteMsg -> {
-                            try {
-                                log.info("write {}", new String(byteMsg));
-                                outputStream.write(byteMsg);
-                                outputStream.flush();
-                                Thread.sleep(500);
-                            } catch (IOException e) {
-                                log.error("Failed to send TCP message", e);
-                            } catch (InterruptedException e) {
-                                log.error("sleep has been interrupted: {}", e.getMessage());
-                            }
-                        });
-
-            } catch (UnknownHostException e) {
-                log.error("Unknown host: " + socketIp, e);
-            } catch (IOException e) {
-                log.error("Failed to send TCP message", e);
+            if ("tcp".equals(clientType)) {
+                tcpSendMsgList(socketIp, socketPort, msgList, mapFn);
+            } else if ("udp".equals(clientType)) {
+                udpSendMsgList(socketIp, socketPort, msgList, mapFn);
+            } else {
+                log.error("Unknown Client Type: {}", clientType);
             }
         }
     }
 
 
+    private static void tcpSendMsgList(String socketIp, Integer socketPort,
+                                       List<String> msgList, Function<String, byte[]> mapFn) {
+        try (Socket socket = new Socket(socketIp, socketPort); // Establish connection
+             OutputStream outputStream = socket.getOutputStream()) {
+
+            msgList.stream()
+                    .map(mapFn)
+                    .forEach(byteMsg -> {
+                        try {
+                            log.info("write {}", new String(byteMsg));
+                            outputStream.write(byteMsg);
+                            outputStream.flush();
+                            Thread.sleep(500);
+                        } catch (IOException e) {
+                            log.error("Failed to send TCP message", e);
+                        } catch (InterruptedException e) {
+                            log.error("sleep has been interrupted: {}", e.getMessage());
+                        }
+                    });
+
+        } catch (UnknownHostException e) {
+            log.error("Unknown host: " + socketIp, e);
+        } catch (IOException e) {
+            log.error("Failed to send TCP message", e);
+        }
+    }
+
+    private static void udpSendMsgList(String socketIp, Integer socketPort,
+                                       List<String> msgList, Function<String, byte[]> mapFn) {
+        {
+            DatagramSocket socket;
+            try {
+                socket = new DatagramSocket(50000);
+            } catch (SocketException e) {
+                log.error("Failed to send UDP message", e);
+                return;
+            }
+            msgList.stream()
+                    .map(mapFn)
+                    .forEach(byteMsg -> {
+                        log.info("write {}", new String(byteMsg));
+                        // 构造数据报包，用来将长度为 length 的包发送到指定主机上的指定端口号。
+                        DatagramPacket packet = null;
+                        try {
+                            packet = new DatagramPacket(byteMsg, byteMsg.length,
+                                    InetAddress.getByName(socketIp), socketPort);
+                        } catch (UnknownHostException e) {
+                            log.error("Unknown Host");
+                        }
+                        // 从此套接字发送数据报包
+                        try {
+                            socket.send(packet);
+                        } catch (IOException e) {
+                            log.error("Failed to send UDP message", e);
+                        }
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            log.error("sleep has been interrupted: {}", e.getMessage());
+                        }
+                    });
+            // 关闭此数据报套接字。
+            socket.close();
+        }
+
+    }
 }

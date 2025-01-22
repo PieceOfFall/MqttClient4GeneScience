@@ -47,35 +47,35 @@ plc:
       sub-command-list:
         - name: screenPoweron
           is-hex: true
-          address: ["10.29.5.159:23","10.29.5.160:23","10.29.5.161:23"]
+          address: ["10.29.5.159:xxxx","10.29.5.160:xxxx","10.29.5.161:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
         - name: screenPoweroff
           is-hex: true
-          address: ["10.29.5.159:23","10.29.5.160:23","10.29.5.161:23"]
+          address: ["10.29.5.159:xxxx","10.29.5.160:xxxx","10.29.5.161:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
         - name: pipelinePoweron
           is-hex: true
-          address: ["10.29.5.159:23"]
+          address: ["10.29.5.159:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
         - name: growthPoweron
           is-hex: true
-          address: ["10.29.5.160:23"]
+          address: ["10.29.5.160:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
         - name: productionPoweron
           is-hex: true
-          address: ["10.29.5.161:23"]
+          address: ["10.29.5.161:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 01 00 00 00 00 00 F5" ]
         - name: pipelinePoweroff
           is-hex: true
-          address: ["10.29.5.159:23"]
+          address: ["10.29.5.159:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
         - name: growthPoweroff
           is-hex: true
-          address: ["10.29.5.160:23"]
+          address: ["10.29.5.160:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
         - name: productionPoweroff
           is-hex: true
-          address: ["10.29.5.161:23"]
+          address: ["10.29.5.161:xxxx"]
           command: [ "F5 B1 01 01 1E 1E 10 00 00 00 00 00 00 00 F4" ]
 
     # 研发管线-主机
@@ -172,6 +172,7 @@ plc:
     # 发展战略 (投影仪)
     - name: projector
       ip: 10.29.5.149
+      is-hex: true
       port: 6000
       poweron-command: [ "openfzzl" ]
       poweroff-command: [ "closefzzl" ]
@@ -179,7 +180,7 @@ plc:
         - name: projectorPoweron
           is-hex: true
           address: ["10.29.5.144:1024","10.29.5.145:1024","10.29.5.146:1024","10.29.5.147:1024"]
-          command: [ "3030504F4E0D" ]
+          command: [ "3030504F4EOD" ]
         - name: projectorPoweroff
           is-hex: true
           address: ["10.29.5.144:1024","10.29.5.145:1024","10.29.5.146:1024","10.29.5.147:1024"]
@@ -187,19 +188,19 @@ plc:
         - name: poweron1
           is-hex: true
           address: ["10.29.5.144:1024"]
-          command: [ "3030504F4E0D" ]
+          command: [ "3030504F4EOD" ]
         - name: poweron2
           is-hex: true
           address: ["10.29.5.145:1024"]
-          command: [ "3030504F4E0D" ]
+          command: [ "3030504F4EOD" ]
         - name: poweron3
           is-hex: true
           address: ["10.29.5.146:1024"]
-          command: [ "3030504F4E0D" ]
+          command: [ "3030504F4EOD" ]
         - name: poweron4
           is-hex: true
           address: ["10.29.5.147:1024"]
-          command: [ "3030504F4E0D" ]
+          command: [ "3030504F4EOD" ]
         - name: poweroff1
           is-hex: true
           address: ["10.29.5.144:1024"]
@@ -217,65 +218,45 @@ plc:
           address: ["10.29.5.147:1024"]
           command: [ "3030504F460D" ]
         - name: play
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 31 30 30 32 4D 30 30 30 32" ]
+          port: 6000
+          command: [ "FF AA CC 01 FE" ]
         - name: pause
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 31 30 30 32 4D 30 30 30 31" ]
+          port: 6000
+          command: [ "FF AA CC 02 FE" ]
         - name: volumeUp
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 39 39 39 39 4D 30 30 31 30" ]
+          port: 6000
+          command: [ "FF AA E3 0A FE" ]
         - name: volumeDown
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 39 39 39 39 4D 30 30 31 31" ]
+          port: 6000
+          command: [ "FF AA E4 0A FE" ]
         - name: head
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 31 30 30 31 4D 30 30 30 31" ]
+          port: 6000
+          command: [ "FF AA CC 0B FE" ]
         - name: last
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 31 30 30 32 4D 30 30 30 33" ]
+          port: 6000
+          command: [ "FF AA CC 0F FE" ]
         - name: next
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 31 30 30 32 4D 30 30 30 34" ]
+          port: 6000
+          command: [ "FF AA CC 10 FE" ]
         - name: mute
-          ctype: udp
-          is-hex: true
-          ip: 10.29.5.140
-          port: 9913
-          command: [ "4D 39 39 39 39 4D 30 30 31 32" ]
-        - name: loop
-          is-hex: true
-          ctype: udp
-          ip: 10.29.5.140
-          port: 9913
-          command: [ "4D 39 39 39 39 4D 30 30 30 38" ]
-        - name: unLoop
-          ctype: udp
           ip: 10.29.5.140
           is-hex: true
-          port: 9913
-          command: [ "4D 31 30 30 31 4D 30 30 30 31" ]
+          port: 6000
+          command: [ "FF AA CC 0A FE" ]
 
 
     # 企业荣誉-一体机
@@ -289,13 +270,13 @@ plc:
     - name: door1
       ip: 10.29.5.151
       port: 6000
-      reversal-command: [ "door02" ]
+      reversal-command: [ "door01" ]
 
     # 门禁2
     - name: door2
       ip: 10.29.5.151
       port: 6000
-      reversal-command: [ "door01" ]
+      reversal-command: [ "door02" ]
 
     # 灯带
     - name: light

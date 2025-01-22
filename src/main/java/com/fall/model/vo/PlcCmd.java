@@ -17,5 +17,6 @@ public class PlcCmd {
     private List<String> poweroffCommand;
     private List<String> reversalCommand;
     private Boolean isHex = false;
+    private String cType = "tcp";
     private List<PlcSubCmd> subCommandList;
 }

@@ -1,6 +1,6 @@
 package com.fall.handler.impl;
 
-import com.fall.client.tcp.TcpClient;
+import com.fall.client.tcp.NetClient;
 import com.fall.handler.MsgHandler;
 import com.fall.model.vo.PlcCmd;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component
 @ConfigurationProperties("plc")
 public class PlcMsgHandler implements MsgHandler {
-    private final TcpClient tcpClient;
+    private final NetClient netClient;
 
     private List<PlcCmd> list;
 
@@ -33,8 +33,8 @@ public class PlcMsgHandler implements MsgHandler {
     }
 
     @Autowired
-    public PlcMsgHandler(TcpClient tcpClient) {
-        this.tcpClient = tcpClient;
+    public PlcMsgHandler(NetClient netClient) {
+        this.netClient = netClient;
     }
 
     @Override
@@ -45,15 +45,11 @@ public class PlcMsgHandler implements MsgHandler {
         String target = splitMsg[0];
         String cmd = splitMsg[1];
 
-        if (!"all".equals(target)) {
-            PlcCmd plcMsg = plcMsgMap.get(target);
-            if(plcMsg == null) {
-                log.error("Unresolved Target: {}",target);
-                return;
-            }
-            tcpClient.sendTcpMessage(plcMsg, cmd);
-        } else {
-            tcpClient.sendTcpMsgAll(list,cmd);
+        PlcCmd plcMsg = plcMsgMap.get(target);
+        if (plcMsg == null) {
+            log.error("Unresolved Target: {}", target);
+            return;
         }
+        netClient.sendMsg(plcMsg, cmd);
     }
 }
